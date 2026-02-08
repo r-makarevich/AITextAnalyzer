@@ -49,9 +49,12 @@ public class SentimentAnalysisService : ISentimentAnalysisService
         var negativeWords = new[] { "bad", "terrible", "awful", "horrible", "worst", "hate", 
             "poor", "disappointing", "sad", "angry", "useless", "waste", "disgusting" };
 
-        // Use culture-invariant comparison to avoid culture-sensitive behavior
-        var positiveCount = words.Count(word => positiveWords.Any(pw => pw.Equals(word, StringComparison.OrdinalIgnoreCase)));
-        var negativeCount = words.Count(word => negativeWords.Any(nw => nw.Equals(word, StringComparison.OrdinalIgnoreCase)));
+        // Use HashSet with culture-invariant comparer for O(n) lookup performance
+        var positiveSet = new HashSet<string>(positiveWords, StringComparer.OrdinalIgnoreCase);
+        var negativeSet = new HashSet<string>(negativeWords, StringComparer.OrdinalIgnoreCase);
+        
+        var positiveCount = words.Count(word => positiveSet.Contains(word));
+        var negativeCount = words.Count(word => negativeSet.Contains(word));
 
         if (positiveCount > negativeCount)
         {
