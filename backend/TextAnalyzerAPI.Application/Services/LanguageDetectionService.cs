@@ -146,13 +146,8 @@ public class LanguageDetectionService : ILanguageDetectionService
         string predictedLanguage = prediction.Language ?? UnknownLanguage;
         
         // Validate and normalize the predicted language against known languages
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type
-        if (_supportedLanguages.TryGetValue(predictedLanguage, out string canonicalLanguage))
-#pragma warning restore CS8600
-        {
-            return canonicalLanguage;
-        }
-        
-        return UnknownLanguage;
+        return _supportedLanguages.TryGetValue(predictedLanguage, out string? canonicalLanguage) 
+            ? canonicalLanguage 
+            : UnknownLanguage;
     }
 }
