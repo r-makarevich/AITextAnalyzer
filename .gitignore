@@ -43,7 +43,6 @@ bld/
 project.lock.json
 project.fragment.lock.json
 artifacts/
-**/Properties/launchSettings.json
 
 ## NuGet
 *.nupkg
@@ -74,7 +73,6 @@ dist/
 .env
 .env.local
 .env.*.local
-appsettings.Development.json
 secrets.json
 
 ## OS
@@ -85,7 +83,6 @@ Thumbs.db
 .idea/
 
 ## Database
-*.db
 *.db-shm
 *.db-wal
 *.sqlite
