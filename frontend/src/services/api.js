@@ -22,5 +22,10 @@ export default {
   async getAllTexts() {
     const response = await apiClient.get('/TextAnalysis/all')
     return response.data
+  },
+
+  async deleteText(id) {
+    const response = await apiClient.delete(`/TextAnalysis/${id}`)
+    return response.data
   }
 }
