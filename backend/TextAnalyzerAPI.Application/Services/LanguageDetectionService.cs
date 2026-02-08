@@ -5,8 +5,12 @@ namespace TextAnalyzerAPI.Application.Services;
 
 public class LanguageDetectionService : ILanguageDetectionService
 {
+    private const string UnknownLanguage = "Unknown";
     private readonly PredictionEngine<LanguageData, LanguagePrediction> _predictionEngine;
-    private readonly string[] _languages = new[] { "English", "Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese", "Japanese" };
+    private static readonly HashSet<string> _supportedLanguages = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "English", "Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese", "Japanese"
+    };
 
     public LanguageDetectionService()
     {
@@ -135,10 +139,15 @@ public class LanguageDetectionService : ILanguageDetectionService
     {
         if (string.IsNullOrWhiteSpace(text))
         {
-            return "Unknown";
+            return UnknownLanguage;
         }
 
         LanguagePrediction prediction = _predictionEngine.Predict(new LanguageData { Text = text });
-        return string.IsNullOrWhiteSpace(prediction.Language) ? "Unknown" : prediction.Language;
+        string predictedLanguage = prediction.Language ?? UnknownLanguage;
+        
+        // Validate and normalize the predicted language against known languages
+        return _supportedLanguages.TryGetValue(predictedLanguage, out string? canonicalLanguage) 
+            ? canonicalLanguage 
+            : UnknownLanguage;
     }
 }
