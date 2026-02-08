@@ -10,8 +10,8 @@ public static class DependencyInjection
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         
-        services.AddScoped<ISentimentAnalysisService, SentimentAnalysisService>();
-        services.AddScoped<ILanguageDetectionService, LanguageDetectionService>();
+        services.AddSingleton<ISentimentAnalysisService, SentimentAnalysisService>();
+        services.AddSingleton<ILanguageDetectionService, LanguageDetectionService>();
 
         return services;
     }
