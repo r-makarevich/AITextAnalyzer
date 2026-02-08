@@ -2,7 +2,7 @@ using TextAnalyzerAPI.Application;
 using TextAnalyzerAPI.Infrastructure;
 using TextAnalyzerAPI.Infrastructure.Data;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -25,12 +25,12 @@ builder.Services.AddCors(options =>
         });
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Ensure database is created
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
 }
 
