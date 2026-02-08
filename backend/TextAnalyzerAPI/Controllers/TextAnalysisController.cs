@@ -1,8 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TextAnalyzerAPI.Application.Commands;
+using TextAnalyzerAPI.Application.Models;
 using TextAnalyzerAPI.Application.Queries;
-using TextAnalyzerAPI.Domain.Entities;
 
 namespace TextAnalyzerAPI.Controllers;
 
@@ -18,7 +18,7 @@ public class TextAnalysisController : ControllerBase
     }
 
     [HttpPost("analyze")]
-    public async Task<ActionResult<int>> Analyze([FromBody] string content)
+    public async Task<ActionResult<AnalyzeTextResponse>> Analyze([FromBody] string content)
     {
         if (string.IsNullOrWhiteSpace(content))
         {
@@ -26,13 +26,13 @@ public class TextAnalysisController : ControllerBase
         }
 
         var command = new AnalyzeTextCommand(content);
-        var id = await _mediator.Send(command);
+        var result = await _mediator.Send(command);
 
-        return Ok(id);
+        return Ok(result);
     }
 
     [HttpGet("all")]
-    public async Task<ActionResult<List<TextAnalysis>>> GetAll()
+    public async Task<ActionResult<List<AnalyzeTextResponse>>> GetAll()
     {
         var query = new GetAllTextsQuery();
         var result = await _mediator.Send(query);
