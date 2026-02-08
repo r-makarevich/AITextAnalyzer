@@ -139,6 +139,6 @@ public class LanguageDetectionService : ILanguageDetectionService
         }
 
         LanguagePrediction prediction = _predictionEngine.Predict(new LanguageData { Text = text });
-        return prediction.Language ?? "Unknown";
+        return string.IsNullOrWhiteSpace(prediction.Language) ? "Unknown" : prediction.Language;
     }
 }
