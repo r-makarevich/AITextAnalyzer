@@ -8,6 +8,17 @@ namespace TextAnalyzerAPI.Application.Services;
 public class SentimentAnalysisService : ISentimentAnalysisService
 {
     private readonly PredictionEngine<SentimentData, SentimentPrediction> _predictionEngine;
+    private static readonly char[] WordDelimiters = { ' ', '\t', '\n', '\r', '.', ',', '!', '?', ';', ':', '-', '(', ')', '[', ']', '{', '}', '"', '\'' };
+    private static readonly HashSet<string> PositiveWords = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "good", "great", "excellent", "amazing", "wonderful", "fantastic",
+        "love", "best", "awesome", "happy", "nice", "perfect", "beautiful", "brilliant"
+    };
+    private static readonly HashSet<string> NegativeWords = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "bad", "terrible", "awful", "horrible", "worst", "hate",
+        "poor", "disappointing", "sad", "angry", "useless", "waste", "disgusting"
+    };
 
     public SentimentAnalysisService()
     {
@@ -37,18 +48,11 @@ public class SentimentAnalysisService : ISentimentAnalysisService
         var prediction = _predictionEngine.Predict(input);
 
         // Simple rule-based sentiment analysis
-        var lowerText = text.ToLower();
+        // Tokenize the text into words to avoid substring false positives
+        var words = text.Split(WordDelimiters, StringSplitOptions.RemoveEmptyEntries);
         
-        // Positive keywords
-        var positiveWords = new[] { "good", "great", "excellent", "amazing", "wonderful", "fantastic", 
-            "love", "best", "awesome", "happy", "nice", "perfect", "beautiful", "brilliant" };
-        
-        // Negative keywords
-        var negativeWords = new[] { "bad", "terrible", "awful", "horrible", "worst", "hate", 
-            "poor", "disappointing", "sad", "angry", "useless", "waste", "disgusting" };
-
-        var positiveCount = positiveWords.Count(word => lowerText.Contains(word));
-        var negativeCount = negativeWords.Count(word => lowerText.Contains(word));
+        var positiveCount = words.Count(word => PositiveWords.Contains(word));
+        var negativeCount = words.Count(word => NegativeWords.Contains(word));
 
         if (positiveCount > negativeCount)
         {
