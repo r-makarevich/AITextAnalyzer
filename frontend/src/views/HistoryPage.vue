@@ -258,13 +258,32 @@ export default {
         // Remove from local list
         analyses.value = analyses.value.filter(a => a.id !== analysisToDelete.value.id)
         
-        // Close the modal
+        // Close and cleanup modal
         const deleteModalElement = document.getElementById('deleteModal')
-        const deleteModal = Modal.getInstance(deleteModalElement)
-        if (deleteModal) {
-          deleteModal.hide()
+        let deleteModal = Modal.getInstance(deleteModalElement)
+        
+        // If no instance exists, create one to properly close it
+        if (!deleteModal) {
+          deleteModal = new Modal(deleteModalElement)
         }
         
+        // Listen for modal hidden event to clean up
+        deleteModalElement.addEventListener('hidden.bs.modal', () => {
+          // Force remove all backdrops
+          document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove())
+          
+          // Clean up body classes and styles
+          document.body.classList.remove('modal-open')
+          document.body.style.overflow = ''
+          document.body.style.paddingRight = ''
+          
+          // Dispose of the modal instance
+          if (deleteModal) {
+            deleteModal.dispose()
+          }
+        }, { once: true })
+        
+        deleteModal.hide()
         analysisToDelete.value = null
       } catch (err) {
         error.value = err.response?.data?.message || 'Failed to delete analysis. Please try again.'
