@@ -5,8 +5,9 @@ namespace TextAnalyzerAPI.Application.Services;
 
 public class LanguageDetectionService : ILanguageDetectionService
 {
+    private const string UnknownLanguage = "Unknown";
     private readonly PredictionEngine<LanguageData, LanguagePrediction> _predictionEngine;
-    private static readonly HashSet<string> SupportedLanguages = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> _supportedLanguages = new(StringComparer.OrdinalIgnoreCase)
     {
         "English", "Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Chinese", "Japanese"
     };
@@ -138,15 +139,20 @@ public class LanguageDetectionService : ILanguageDetectionService
     {
         if (string.IsNullOrWhiteSpace(text))
         {
-            return "Unknown";
+            return UnknownLanguage;
         }
 
         LanguagePrediction prediction = _predictionEngine.Predict(new LanguageData { Text = text });
-        string predictedLanguage = prediction.Language ?? "Unknown";
+        string predictedLanguage = prediction.Language ?? UnknownLanguage;
         
         // Validate and normalize the predicted language against known languages
-        return SupportedLanguages.TryGetValue(predictedLanguage, out string? canonicalLanguage) 
-            ? canonicalLanguage 
-            : "Unknown";
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type
+        if (_supportedLanguages.TryGetValue(predictedLanguage, out string canonicalLanguage))
+#pragma warning restore CS8600
+        {
+            return canonicalLanguage;
+        }
+        
+        return UnknownLanguage;
     }
 }
