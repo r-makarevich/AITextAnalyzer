@@ -139,6 +139,11 @@ public class LanguageDetectionService : ILanguageDetectionService
         }
 
         LanguagePrediction prediction = _predictionEngine.Predict(new LanguageData { Text = text });
-        return prediction.Language ?? "Unknown";
+        string predictedLanguage = prediction.Language ?? "Unknown";
+        
+        // Validate and normalize the predicted language against known languages
+        return _languages.Contains(predictedLanguage, StringComparer.OrdinalIgnoreCase) 
+            ? predictedLanguage 
+            : "Unknown";
     }
 }
