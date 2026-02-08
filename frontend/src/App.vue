@@ -25,13 +25,28 @@
                 Statistics
               </router-link>
             </li>
+            <li class="nav-item" v-if="!isAdmin">
+              <router-link class="nav-link" to="/login">
+                <i class="bi bi-shield-lock"></i> Admin Login
+              </router-link>
+            </li>
+            <li class="nav-item" v-if="isAdmin">
+              <span class="nav-link text-warning">
+                <i class="bi bi-shield-check"></i> Admin
+              </span>
+            </li>
+            <li class="nav-item" v-if="isAdmin">
+              <button class="btn btn-outline-light btn-sm ms-2" @click="handleLogout">
+                <i class="bi bi-box-arrow-right"></i> Logout
+              </button>
+            </li>
           </ul>
         </div>
       </div>
     </nav>
     
     <main class="container my-4">
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </main>
     
     <footer class="bg-light text-center py-3 mt-5">
@@ -43,8 +58,39 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
 export default {
-  name: 'App'
+  name: 'App',
+  setup() {
+    const router = useRouter()
+    const isAdmin = ref(false)
+
+    const checkAdminStatus = () => {
+      isAdmin.value = localStorage.getItem('isAdmin') === 'true'
+    }
+
+    const handleLogout = () => {
+      localStorage.removeItem('isAdmin')
+      localStorage.removeItem('adminLoginTime')
+      isAdmin.value = false
+      router.push('/')
+    }
+
+    onMounted(() => {
+      checkAdminStatus()
+      // Check admin status on storage change (e.g., from login page)
+      window.addEventListener('storage', checkAdminStatus)
+      // Also check on focus in case localStorage was updated in same tab
+      setInterval(checkAdminStatus, 1000)
+    })
+
+    return {
+      isAdmin,
+      handleLogout
+    }
+  }
 }
 </script>
 

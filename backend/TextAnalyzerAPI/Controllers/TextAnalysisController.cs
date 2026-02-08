@@ -39,4 +39,18 @@ public class TextAnalysisController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        DeleteTextCommand command = new DeleteTextCommand(id);
+        bool result = await _mediator.Send(command);
+
+        if (!result)
+        {
+            return NotFound($"Text analysis with ID {id} not found.");
+        }
+
+        return Ok(new { message = "Text analysis deleted successfully.", id });
+    }
 }
