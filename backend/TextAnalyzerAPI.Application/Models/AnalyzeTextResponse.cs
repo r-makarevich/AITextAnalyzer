@@ -8,5 +8,6 @@ public class AnalyzeTextResponse
     public string Content { get; set; } = string.Empty;
     public Sentiment Sentiment { get; set; }
     public string SentimentText { get; set; } = string.Empty;
+    public string Language { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }

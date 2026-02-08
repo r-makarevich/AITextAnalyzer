@@ -10,12 +10,12 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, string? connectionString = null)
     {
         // Set database path to Infrastructure project's Data folder
-        var dbPath = connectionString ?? Path.Combine(
+        string dbPath = connectionString ?? Path.Combine(
             Path.GetDirectoryName(typeof(DependencyInjection).Assembly.Location)!,
             "..", "..", "..", "..",
             "TextAnalyzerAPI.Infrastructure", "Data", "TextAnalyzer.db");
         
-        var fullConnectionString = $"Data Source={dbPath}";
+        string fullConnectionString = $"Data Source={dbPath}";
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(fullConnectionString));

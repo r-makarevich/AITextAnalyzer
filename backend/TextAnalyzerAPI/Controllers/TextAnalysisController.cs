@@ -25,8 +25,8 @@ public class TextAnalysisController : ControllerBase
             return BadRequest("Content cannot be empty.");
         }
 
-        var command = new AnalyzeTextCommand(content);
-        var result = await _mediator.Send(command);
+        AnalyzeTextCommand command = new AnalyzeTextCommand(content);
+        AnalyzeTextResponse result = await _mediator.Send(command);
 
         return Ok(result);
     }
@@ -34,8 +34,8 @@ public class TextAnalysisController : ControllerBase
     [HttpGet("all")]
     public async Task<ActionResult<List<AnalyzeTextResponse>>> GetAll()
     {
-        var query = new GetAllTextsQuery();
-        var result = await _mediator.Send(query);
+        GetAllTextsQuery query = new GetAllTextsQuery();
+        List<AnalyzeTextResponse> result = await _mediator.Send(query);
 
         return Ok(result);
     }
