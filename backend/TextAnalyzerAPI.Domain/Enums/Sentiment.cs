@@ -2,7 +2,7 @@ namespace TextAnalyzerAPI.Domain.Enums;
 
 public enum Sentiment
 {
-    Negative,
-    Neutral,
-    Positive
+    Negative = 0,
+    Neutral = 1,
+    Positive = 2
 }
