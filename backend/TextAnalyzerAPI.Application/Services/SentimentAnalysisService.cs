@@ -37,7 +37,9 @@ public class SentimentAnalysisService : ISentimentAnalysisService
         var prediction = _predictionEngine.Predict(input);
 
         // Simple rule-based sentiment analysis
-        var lowerText = text.ToLower();
+        // Tokenize the text into words to avoid substring false positives
+        var words = text.Split(new[] { ' ', '\t', '\n', '\r', '.', ',', '!', '?', ';', ':', '-', '(', ')', '[', ']', '{', '}', '"', '\'' }, 
+            StringSplitOptions.RemoveEmptyEntries);
         
         // Positive keywords
         var positiveWords = new[] { "good", "great", "excellent", "amazing", "wonderful", "fantastic", 
@@ -47,8 +49,9 @@ public class SentimentAnalysisService : ISentimentAnalysisService
         var negativeWords = new[] { "bad", "terrible", "awful", "horrible", "worst", "hate", 
             "poor", "disappointing", "sad", "angry", "useless", "waste", "disgusting" };
 
-        var positiveCount = positiveWords.Count(word => lowerText.Contains(word));
-        var negativeCount = negativeWords.Count(word => lowerText.Contains(word));
+        // Use culture-invariant comparison to avoid culture-sensitive behavior
+        var positiveCount = words.Count(word => positiveWords.Any(pw => pw.Equals(word, StringComparison.OrdinalIgnoreCase)));
+        var negativeCount = words.Count(word => negativeWords.Any(nw => nw.Equals(word, StringComparison.OrdinalIgnoreCase)));
 
         if (positiveCount > negativeCount)
         {
