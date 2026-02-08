@@ -20,6 +20,11 @@
                 History
               </router-link>
             </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/statistics" active-class="active">
+                Statistics
+              </router-link>
+            </li>
           </ul>
         </div>
       </div>
