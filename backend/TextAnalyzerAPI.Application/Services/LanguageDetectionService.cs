@@ -142,8 +142,6 @@ public class LanguageDetectionService : ILanguageDetectionService
         string predictedLanguage = prediction.Language ?? "Unknown";
         
         // Validate and normalize the predicted language against known languages
-        return _languages.Contains(predictedLanguage, StringComparer.OrdinalIgnoreCase) 
-            ? predictedLanguage 
-            : "Unknown";
+        return _languages.FirstOrDefault(l => l.Equals(predictedLanguage, StringComparison.OrdinalIgnoreCase)) ?? "Unknown";
     }
 }
