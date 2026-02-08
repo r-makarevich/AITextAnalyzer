@@ -8,6 +8,7 @@ namespace TextAnalyzerAPI.Application.Services;
 public class SentimentAnalysisService : ISentimentAnalysisService
 {
     private readonly PredictionEngine<SentimentData, SentimentPrediction> _predictionEngine;
+    private static readonly char[] WordDelimiters = { ' ', '\t', '\n', '\r', '.', ',', '!', '?', ';', ':', '-', '(', ')', '[', ']', '{', '}', '"', '\'' };
 
     public SentimentAnalysisService()
     {
@@ -38,8 +39,7 @@ public class SentimentAnalysisService : ISentimentAnalysisService
 
         // Simple rule-based sentiment analysis
         // Tokenize the text into words to avoid substring false positives
-        var words = text.Split(new[] { ' ', '\t', '\n', '\r', '.', ',', '!', '?', ';', ':', '-', '(', ')', '[', ']', '{', '}', '"', '\'' }, 
-            StringSplitOptions.RemoveEmptyEntries);
+        var words = text.Split(WordDelimiters, StringSplitOptions.RemoveEmptyEntries);
         
         // Positive keywords
         var positiveWords = new[] { "good", "great", "excellent", "amazing", "wonderful", "fantastic", 
