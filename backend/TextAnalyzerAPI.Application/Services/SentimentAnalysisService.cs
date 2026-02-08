@@ -65,16 +65,23 @@ public class SentimentAnalysisService : ISentimentAnalysisService
 
         // Use ML.NET prediction result to determine sentiment
         // prediction.Prediction is true for positive sentiment, false for negative
-        // prediction.Probability represents confidence in the prediction
+        // prediction.Probability represents the probability of the positive class (true)
         // Use a threshold to determine if sentiment is strong enough, otherwise return neutral
         const float confidenceThreshold = 0.6f;
         
         if (prediction.Probability >= confidenceThreshold)
         {
-            return prediction.Prediction ? Sentiment.Positive : Sentiment.Negative;
+            // High confidence in positive sentiment
+            return Sentiment.Positive;
+        }
+        else if (prediction.Probability <= (1 - confidenceThreshold))
+        {
+            // High confidence in negative sentiment (probability of positive is low)
+            return Sentiment.Negative;
         }
         else
         {
+            // Low confidence, return neutral
             return Sentiment.Neutral;
         }
     }
