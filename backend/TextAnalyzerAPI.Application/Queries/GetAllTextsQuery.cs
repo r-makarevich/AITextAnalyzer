@@ -1,6 +1,6 @@
 using MediatR;
-using TextAnalyzerAPI.Domain.Entities;
+using TextAnalyzerAPI.Application.Models;
 
 namespace TextAnalyzerAPI.Application.Queries;
 
-public record GetAllTextsQuery : IRequest<List<TextAnalysis>>;
+public record GetAllTextsQuery : IRequest<List<AnalyzeTextResponse>>;
